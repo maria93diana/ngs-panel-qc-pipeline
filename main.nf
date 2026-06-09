@@ -13,17 +13,25 @@ workflow {
 
     fasta_ch = Channel
         .fromPath( params.fasta, checkIfExists: true )
+        .first()
 
     FASTQC_RAW( reads_ch )
     
     TRIMGALORE( reads_ch )
     
     trimmed_ch = TRIMGALORE.out.trimmed_reads
-        .map { sample_id, r1, r2 -> tuple( sample_id, [r1, r2] ) }
+        .map { sample_id, r1, r2 -> tuple( sample_id, r1, r2 ) }
     
-    FASTQC_TRIM( trimmed_ch )
+    FASTQC_TRIM( 
+        TRIMGALORE.out.trimmed_reads
+            .map { sample_id, r1, r2 -> tuple( sample_id, [r1, r2] ) }
+    )
     
     BWAMEM2_INDEX( fasta_ch )
     
-    BWAMEM2_ALIGN( TRIMGALORE.out.trimmed_reads, BWAMEM2_INDEX.out.index )
+    BWAMEM2_ALIGN( 
+        trimmed_ch,
+        fasta_ch,
+        BWAMEM2_INDEX.out.index.collect()
+    )
 }

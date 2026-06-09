@@ -1,7 +1,7 @@
 process BWAMEM2_INDEX {
     tag "hg38"
     
-    container 'quay.io/biocontainers/bwa-mem2:2.2.1--he513fc3_0'
+    conda 'bioconda::bwa-mem2=2.2.1'
     
     publishDir "${params.outdir}/reference", mode: 'copy'
     

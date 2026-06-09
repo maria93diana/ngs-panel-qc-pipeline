@@ -1,23 +1,25 @@
 process BWAMEM2_ALIGN {
     tag "$sample_id"
     
-   container 'quay.io/biocontainers/mulled-v2-ac74a7f02cebcfbc0058b9a6d25034f3b8a91f5e:c6a9808c2cf3fbb2d6dfd495b428de86905d5a5c-0'
+    conda 'bioconda::bwa-mem2=2.2.1 bioconda::samtools=1.21'
     
     publishDir "${params.outdir}/alignment", mode: 'copy'
     
     input:
     tuple val(sample_id), path(r1), path(r2)
+    path fasta
     path index
     
     output:
     tuple val(sample_id), path("${sample_id}.bam"), emit: bam
+    tuple val(sample_id), path("${sample_id}.bam.bai"), emit: bai
     
     script:
     """
     bwa-mem2 mem \\
         -t ${task.cpus} \\
         -R "@RG\\tID:${sample_id}\\tSM:${sample_id}\\tPL:ILLUMINA" \\
-        hg38.fa.gz \\
+        ${fasta} \\
         ${r1} ${r2} | \\
         samtools sort -@ ${task.cpus} -o ${sample_id}.bam
     
