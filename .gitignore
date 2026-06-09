@@ -1,0 +1,22 @@
+# Output e dati grezzi
+results/
+data/raw/
+*.fastq.gz
+*.fastq
+*.bam
+*.bai
+*.vcf.gz
+*.vcf
+
+# Nextflow work directory
+work/
+.nextflow/
+.nextflow.log*
+
+# R e Python
+.Rhistory
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
