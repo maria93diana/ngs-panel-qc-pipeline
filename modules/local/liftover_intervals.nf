@@ -17,6 +17,7 @@ process LIFTOVER_INTERVALS {
         --baits   ${baits} \
         --targets ${targets} \
         --out_baits   ActSeqBaits_hg38.bed \
-        --out_targets ActSeqTargets_hg38.bed
+        --out_targets ActSeqTargets_hg38.bed \
+        --chroms  ${params.reference_chroms}
     """
 }
